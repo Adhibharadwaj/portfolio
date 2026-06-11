@@ -1,0 +1,39 @@
+:root {
+  color: #161613;
+  background: #f7f1df;
+  font-family: "Aptos Display", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --ink: #161613;
+  --paper: #f7f1df;
+  --paper-deep: #eadfbe;
+  --signal: #c7f24a;
+  --blueprint: #2458ff;
+  --copper: #c05d2d;
+  --aqua: #08a7a3;
+  --line: rgba(22, 22, 19, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
