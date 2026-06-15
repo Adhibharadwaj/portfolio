@@ -16,10 +16,10 @@
 	npm install completed with no vulnerabilities. npm run build completed successfully.
 
 - [x] Create and Run Task
-	Skipped because npm is not installed, so a runnable npm task cannot be launched here.
+	Skipped because no separate VS Code task is needed for this Vite app.
 
-- [ ] Launch the Project
-	Pending local dev server launch.
+- [x] Launch the Project
+	Local Vite dev server launched at http://127.0.0.1:5173/ using the portable Node.js runtime.
 
 - [x] Ensure Documentation is Complete
 	README.md and this copilot-instructions.md file are present and updated.

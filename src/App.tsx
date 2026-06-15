@@ -1,218 +1,501 @@
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 
-type Project = {
-  year: string;
+/* ----------------------------- data ----------------------------- */
+
+type SkillCategory = {
   name: string;
-  domain: string;
-  stack: string;
-  impact: string;
-  accent: string;
+  level: number;
+  blurb: string;
+  tags: string[];
+};
+
+const skills: SkillCategory[] = [
+  {
+    name: 'AWS',
+    level: 95,
+    blurb: 'EC2, S3, IAM, Lambda, ASG, ALB, VPC, CloudWatch, Route 53, ECS.',
+    tags: ['EC2', 'S3', 'IAM', 'Lambda', 'ASG', 'ALB', 'VPC', 'CloudWatch', 'Route 53', 'ECS', 'SNS', 'SQS'],
+  },
+  {
+    name: 'Azure',
+    level: 88,
+    blurb: 'App Services, Functions, Cosmos DB, Key Vault, App Gateway, OpenAI.',
+    tags: ['App Services', 'Functions', 'Cosmos DB', 'Key Vault', 'VNET', 'App Gateway', 'Azure OpenAI', 'AI Search'],
+  },
+  {
+    name: 'Terraform',
+    level: 90,
+    blurb: 'Reusable modules, multi-account state, and repeatable provisioning.',
+    tags: ['HCL', 'Modules', 'Remote State', 'CloudFormation'],
+  },
+  {
+    name: 'Jenkins',
+    level: 88,
+    blurb: 'Declarative & scripted pipelines, shared libraries, autoscaled agents.',
+    tags: ['Pipelines', 'Groovy', 'Shared Libs', 'Agents'],
+  },
+  {
+    name: 'Docker',
+    level: 87,
+    blurb: 'Multi-stage builds, slim images, and container-first delivery.',
+    tags: ['Images', 'Compose', 'Registry', 'Multi-stage'],
+  },
+  {
+    name: 'Kubernetes',
+    level: 80,
+    blurb: 'Deployments, services, ingress, and workload scaling.',
+    tags: ['Deployments', 'Services', 'Ingress', 'HPA'],
+  },
+  {
+    name: 'Python',
+    level: 85,
+    blurb: 'Automation, tooling, FastAPI services, and cloud scripting.',
+    tags: ['Automation', 'FastAPI', 'Boto3', 'Scripting'],
+  },
+  {
+    name: 'Linux',
+    level: 90,
+    blurb: 'Server administration, Nginx, systemd, networking, and hardening.',
+    tags: ['Nginx', 'Bash', 'systemd', 'Certbot'],
+  },
+  {
+    name: 'SonarQube',
+    level: 78,
+    blurb: 'Quality gates, code scanning, and pipeline-integrated analysis.',
+    tags: ['Quality Gates', 'Scanning', 'Dependency-Track'],
+  },
+  {
+    name: 'GitHub Actions',
+    level: 86,
+    blurb: 'Workflow automation, reusable actions, and matrix builds.',
+    tags: ['Workflows', 'YAML', 'Matrix', 'Secrets'],
+  },
+];
+
+type Project = {
+  name: string;
+  tagline: string;
+  cloud: string;
+  description: string;
+  stack: string[];
+  highlight: string;
 };
 
 const projects: Project[] = [
   {
-    year: '2025',
-    name: 'LightMetrics CI Autoscaling',
-    domain: 'Jenkins on AWS',
-    stack: 'EC2 Fleet, ASG, Terraform, IAM, CloudWatch, GitHub Actions',
-    impact: 'Built dynamic CI build-agent infrastructure, tuned autoscaling behavior, improved build availability, and reduced pipeline wait time.',
-    accent: 'fleet',
-  },
-  {
-    year: '2025',
-    name: 'BoardWorks Multi-Region Delivery',
-    domain: 'Azure Platform Engineering',
-    stack: 'Azure App Services, Functions, Cosmos DB, VNET, Key Vault, App Gateway, Azure DevOps',
-    impact: 'Created parameterized YAML pipelines for V6, V8, and AI services across multiple environments and regions with centralized diagnostics.',
-    accent: 'azure',
-  },
-  {
-    year: '2024',
     name: 'OCR Redaction Pipeline',
-    domain: 'AWS Event-Driven Platform',
-    stack: 'CloudFormation, S3, Lambda, SNS, SQS, IAM, CloudWatch, Bitbucket Pipelines',
-    impact: 'Delivered a complete OCR and redaction workflow with least-privilege IAM, multi-account configuration, alerts, and automated Lambda releases.',
-    accent: 'event',
+    tagline: 'AWS event-driven document processing',
+    cloud: 'AWS',
+    description:
+      'A serverless OCR and redaction workflow with least-privilege IAM, multi-account configuration, alerting, and automated Lambda releases.',
+    stack: ['CloudFormation', 'S3', 'Lambda', 'SNS', 'SQS', 'IAM', 'CloudWatch', 'Bitbucket'],
+    highlight: 'Fully automated, secure document redaction at scale.',
   },
   {
-    year: '2024',
-    name: 'BIRA Cloud Deployments',
-    domain: 'Full-Stack CI/CD',
-    stack: 'React, Node.js, AWS, Jenkins, Terraform, Route 53, ALB',
-    impact: 'Provisioned AWS networking and deployment pipelines for frontend and backend services, cutting manual deployment effort and release errors.',
-    accent: 'aws',
+    name: 'BoardWorks AI Platform',
+    tagline: 'Azure multi-region delivery',
+    cloud: 'Azure',
+    description:
+      'Parameterized YAML pipelines for V6, V8, and AI services across multiple environments and regions, with centralized diagnostics and managed identities.',
+    stack: ['App Services', 'Functions', 'Cosmos DB', 'Key Vault', 'App Gateway', 'Azure DevOps', 'Azure OpenAI'],
+    highlight: 'One pipeline, many regions, zero manual drift.',
   },
   {
-    year: '2023',
-    name: 'Cambridge & Vicinia Servers',
-    domain: 'Linux Operations',
-    stack: 'Python, AWS EC2, DigitalOcean, Nginx, DNS, Certbot',
-    impact: 'Managed Python application hosting, SSL, DNS, Nginx routing, deployment automation, and uptime maintenance across cloud servers.',
-    accent: 'linux',
+    name: 'LightMetrics',
+    tagline: 'Jenkins CI autoscaling on AWS',
+    cloud: 'AWS',
+    description:
+      'Dynamic CI build-agent infrastructure with tuned autoscaling behavior that improved build availability and cut pipeline wait time.',
+    stack: ['EC2 Fleet', 'ASG', 'Terraform', 'IAM', 'CloudWatch', 'GitHub Actions'],
+    highlight: 'Faster builds with elastic, cost-aware agents.',
+  },
+  {
+    name: 'Azure Function App CI/CD',
+    tagline: 'Serverless release automation',
+    cloud: 'Azure',
+    description:
+      'End-to-end CI/CD for Azure Function Apps with environment promotion, secret management via Key Vault, and Application Insights observability.',
+    stack: ['Azure Functions', 'Azure DevOps', 'Key Vault', 'App Insights', 'YAML'],
+    highlight: 'Reliable, observable serverless deployments.',
+  },
+  {
+    name: 'AWS Cost Optimization Automation',
+    tagline: 'Automated FinOps tooling',
+    cloud: 'AWS',
+    description:
+      'Automation that surfaces idle resources, right-sizes instances, and schedules non-prod shutdowns to reduce monthly cloud spend.',
+    stack: ['Lambda', 'CloudWatch', 'Python', 'Boto3', 'EventBridge'],
+    highlight: 'Continuous savings without manual cleanup.',
   },
 ];
 
-const skillGroups = [
+type TimelineItem = {
+  period: string;
+  role: string;
+  company: string;
+  points: string[];
+};
+
+const timeline: TimelineItem[] = [
   {
-    title: 'AWS',
-    items: ['EC2', 'S3', 'IAM', 'ASG', 'ALB', 'VPC', 'Lambda', 'CloudWatch', 'CloudFront', 'WAF', 'RDS', 'ELB', 'SNS', 'SQS', 'API Gateway', 'Route 53', 'ECS', 'Airflow'],
+    period: 'Aug 2022 — Feb 2026',
+    role: 'DevOps Engineer',
+    company: 'Spurtree Technologies Pvt Ltd',
+    points: [
+      'Built and maintained CI/CD across Jenkins, Azure DevOps, Bitbucket Pipelines, and GitHub Actions.',
+      'Provisioned cloud infrastructure with Terraform and CloudFormation.',
+      'Designed secure networking and monitoring across AWS and Azure environments.',
+    ],
   },
   {
-    title: 'Azure',
-    items: ['VNET', 'VM', 'App Services', 'Key Vault', 'Functions', 'Cosmos DB', 'Azure OpenAI', 'AI Search', 'Application Gateway', 'Managed Identity', 'Application Insights', 'Storage Accounts', 'Subnets'],
+    period: '2023 — 2024',
+    role: 'Cloud & Linux Operations',
+    company: 'Cambridge & Vicinia Servers',
+    points: [
+      'Managed Python application hosting with Nginx, SSL, and DNS.',
+      'Automated deployments and maintained uptime across cloud servers.',
+    ],
   },
   {
-    title: 'CI/CD + IaC',
-    items: ['Terraform', 'CloudFormation', 'Jenkins', 'Azure DevOps', 'Bitbucket Pipelines', 'GitHub Actions', 'YAML', 'Groovy'],
-  },
-  {
-    title: 'Ops Toolkit',
-    items: ['Docker', 'Kubernetes', 'Nginx', 'Apache2', 'FastAPI', 'PM2', 'SonarQube', 'Dependency-Track', 'Bash', 'PowerShell', 'Python'],
+    period: '2022',
+    role: 'Bachelor of Engineering, ECE',
+    company: 'Sri Krishna Institute of Technology, Bangalore',
+    points: ['Graduated with a focus on systems, networking, and electronics.'],
   },
 ];
 
-const metrics = [
-  ['3.5+', 'years experience'],
-  ['3', 'cloud platforms'],
-  ['5', 'delivery programs'],
-  ['2024', 'AWS SAA certified'],
+const metrics: [string, string][] = [
+  ['3.5+', 'Years experience'],
+  ['3', 'Cloud platforms'],
+  ['5', 'Delivery programs'],
+  ['AWS SAA', 'Certified 2024'],
 ];
+
+/* --------------------------- reveal hook --------------------------- */
+
+function useReveal<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShown(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, shown };
+}
+
+function Reveal({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const { ref, shown } = useReveal<HTMLDivElement>();
+  return (
+    <div
+      ref={ref}
+      className={`reveal ${shown ? 'isVisible' : ''} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------ app ------------------------------ */
 
 function App() {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeProject, setActiveProject] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <main>
-      <section className="hero" id="top">
-        <nav className="nav" aria-label="Primary navigation">
-          <a href="#top" className="brand">ADITHYA.CS</a>
-          <div className="navLinks">
-            <a href="#work">Work</a>
-            <a href="#skills">Stack</a>
-            <a href="#contact">Contact</a>
-          </div>
+    <div className="app">
+      <header className={`nav ${scrolled ? 'navScrolled' : ''}`}>
+        <a href="#top" className="brand">
+          <span className="brandDot" />
+          adithya<span className="brandAccent">.cs</span>
+        </a>
+        <nav className="navLinks" aria-label="Primary">
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Projects</a>
+          <a href="#experience">Experience</a>
+          <a href="#contact">Contact</a>
         </nav>
+        <a className="navCta" href="mailto:adithyacs064@gmail.com">
+          Let&apos;s talk
+        </a>
+      </header>
 
-        <div className="heroGrid">
-          <div className="heroCopy">
-            <p className="eyebrow">DevOps Engineer / Immediate Joiner / Bangalore</p>
-            <h1>Cloud delivery systems that stay fast, observable, and repeatable.</h1>
-            <p className="summary">
-              I am Adithya C S, a DevOps Engineer with 3.5 years of hands-on experience automating,
-              deploying, and managing cloud-native applications across AWS, Azure, and GCP.
-            </p>
-            <div className="heroActions">
-              <a className="button primary" href="mailto:adithyacs064@gmail.com">Email me</a>
-              <a className="button secondary" href="https://www.linkedin.com/in/adithya-c-s-00661b23b" target="_blank" rel="noreferrer">LinkedIn</a>
-            </div>
-          </div>
-
-          <aside className="statusPanel" aria-label="Profile snapshot">
-            <div className="panelHeader">
-              <span>availability</span>
-              <strong>immediate</strong>
-            </div>
-            <div className="cloudMap" aria-hidden="true">
-              <span className="node aws">AWS</span>
-              <span className="node az">AZ</span>
-              <span className="node gcp">GCP</span>
-              <span className="node ci">CI</span>
-              <span className="line one" />
-              <span className="line two" />
-              <span className="line three" />
-            </div>
-            <dl className="contactList">
-              <div><dt>Email</dt><dd>adithyacs064@gmail.com</dd></div>
-              <div><dt>Phone</dt><dd>+91 9480759266</dd></div>
-              <div><dt>Location</dt><dd>Bangalore, India</dd></div>
-            </dl>
-          </aside>
-        </div>
-      </section>
-
-      <section className="metrics" aria-label="Career metrics">
-        {metrics.map(([value, label]) => (
-          <div className="metric" key={label}>
-            <strong>{value}</strong>
-            <span>{label}</span>
-          </div>
-        ))}
-      </section>
-
-      <section className="sectionIntro" id="work">
-        <p className="eyebrow">Selected delivery archive</p>
-        <h2>Production work shaped around pipelines, platforms, and cloud reliability.</h2>
-      </section>
-
-      <section className="workList" aria-label="Selected work">
-        {projects.map((project) => (
-          <article className={`workRow ${project.accent}`} key={project.name}>
-            <div className="year">{project.year}</div>
-            <div className="workMain">
-              <p>{project.domain}</p>
-              <h3>{project.name}</h3>
-              <span>{project.stack}</span>
-            </div>
-            <p className="impact">{project.impact}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="splitSection">
-        <div>
-          <p className="eyebrow">Experience</p>
-          <h2>Spurtree Technologies Pvt Ltd</h2>
-          <p className="role">DevOps Engineer, August 2022 - February 2026</p>
-        </div>
-        <div className="experienceBody">
-          <p>
-            Built and maintained CI/CD systems across Jenkins, Azure DevOps, Bitbucket Pipelines, and GitHub Actions.
-            Provisioned cloud infrastructure with Terraform and CloudFormation, implemented monitoring and diagnostics,
-            and handled secure network design across AWS and Azure environments.
-          </p>
-        </div>
-      </section>
-
-      <section className="skills" id="skills">
-        <div className="sectionIntro compact">
-          <p className="eyebrow">Technical stack</p>
-          <h2>Tools I use to move software from commit to cloud.</h2>
-        </div>
-        <div className="skillGrid">
-          {skillGroups.map((group) => (
-            <article className="skillCard" key={group.title}>
-              <h3>{group.title}</h3>
-              <div className="chips">
-                {group.items.map((item) => <span key={item}>{item}</span>)}
+      <main id="top">
+        {/* Hero */}
+        <section className="hero">
+          <div className="heroGlow" aria-hidden="true" />
+          <div className="heroInner">
+            <Reveal>
+              <span className="badge">
+                <span className="pulse" /> Open to Cloud &amp; DevOps roles · Immediate joiner
+              </span>
+            </Reveal>
+            <Reveal delay={80}>
+              <h1 className="heroTitle">
+                Adithya C S
+              </h1>
+            </Reveal>
+            <Reveal delay={140}>
+              <p className="heroRole">
+                Cloud &amp; DevOps Engineer
+              </p>
+            </Reveal>
+            <Reveal delay={200}>
+              <p className="heroIntro">
+                I design and automate cloud-native delivery systems that stay fast, observable, and
+                repeatable. 3.5+ years building CI/CD pipelines and infrastructure across AWS, Azure,
+                and GCP with Terraform, Jenkins, Docker, and Kubernetes.
+              </p>
+            </Reveal>
+            <Reveal delay={260}>
+              <div className="heroActions">
+                <a className="btn btnPrimary" href="#projects">
+                  View Projects
+                </a>
+                <a className="btn btnGhost" href="#contact">
+                  Contact Me
+                </a>
               </div>
-            </article>
-          ))}
-        </div>
-      </section>
+            </Reveal>
+            <Reveal delay={320}>
+              <div className="heroStats">
+                {metrics.map(([v, l]) => (
+                  <div className="heroStat" key={l}>
+                    <strong>{v}</strong>
+                    <span>{l}</span>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
 
-      <section className="credentialBand">
-        <div>
-          <p className="eyebrow">Certification</p>
-          <h2>AWS Certified Solutions Architect - Associate</h2>
-          <p>Valid October 2024 - October 2027</p>
-        </div>
-        <div>
-          <p className="eyebrow">Education</p>
-          <h2>Bachelor of Engineering, ECE</h2>
-          <p>Sri Krishna Institute of Technology, Bangalore - 2022</p>
-        </div>
-      </section>
+        {/* About */}
+        <section className="section" id="about">
+          <Reveal>
+            <p className="kicker">About me</p>
+            <h2 className="sectionTitle">Engineering reliable paths from commit to cloud.</h2>
+          </Reveal>
+          <div className="aboutGrid">
+            <Reveal delay={80} className="aboutCard glass">
+              <h3>Professional summary</h3>
+              <p>
+                DevOps Engineer with hands-on experience automating, deploying, and managing
+                cloud-native applications. I focus on infrastructure as code, resilient pipelines,
+                secure networking, and observability so teams can ship with confidence.
+              </p>
+            </Reveal>
+            <Reveal delay={140} className="aboutCard glass">
+              <h3>Certifications</h3>
+              <ul className="aboutList">
+                <li>AWS Certified Solutions Architect — Associate</li>
+                <li>Valid Oct 2024 — Oct 2027</li>
+              </ul>
+            </Reveal>
+            <Reveal delay={200} className="aboutCard glass">
+              <h3>Skills overview</h3>
+              <div className="miniChips">
+                {['AWS', 'Azure', 'Terraform', 'Jenkins', 'Docker', 'Kubernetes', 'Python', 'Linux', 'CI/CD'].map(
+                  (t) => (
+                    <span key={t}>{t}</span>
+                  ),
+                )}
+              </div>
+            </Reveal>
+          </div>
+        </section>
 
-      <footer className="footer" id="contact">
-        <div>
-          <p className="eyebrow">Contact</p>
-          <h2>Ready for DevOps, cloud, and platform engineering roles.</h2>
-        </div>
-        <div className="footerLinks">
-          <a href="mailto:adithyacs064@gmail.com">adithyacs064@gmail.com</a>
-          <a href="tel:+919480759266">+91 9480759266</a>
-          <a href="https://www.linkedin.com/in/adithya-c-s-00661b23b" target="_blank" rel="noreferrer">LinkedIn profile</a>
-        </div>
+        {/* Skills */}
+        <section className="section" id="skills">
+          <Reveal>
+            <p className="kicker">Technical skills</p>
+            <h2 className="sectionTitle">The toolkit behind every deployment.</h2>
+          </Reveal>
+          <div className="skillGrid">
+            {skills.map((skill, i) => (
+              <Reveal key={skill.name} delay={i * 50} className="skillCard glass">
+                <div className="skillHead">
+                  <h3>{skill.name}</h3>
+                  <span className="skillLevel">{skill.level}%</span>
+                </div>
+                <p className="skillBlurb">{skill.blurb}</p>
+                <div className="bar">
+                  <SkillBar level={skill.level} />
+                </div>
+                <div className="miniChips">
+                  {skill.tags.map((t) => (
+                    <span key={t}>{t}</span>
+                  ))}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* Projects */}
+        <section className="section" id="projects">
+          <Reveal>
+            <p className="kicker">Featured projects</p>
+            <h2 className="sectionTitle">Production work that shipped and scaled.</h2>
+          </Reveal>
+          <div className="projectLayout">
+            <div className="projectTabs" role="tablist" aria-label="Projects">
+              {projects.map((p, i) => (
+                <button
+                  key={p.name}
+                  role="tab"
+                  aria-selected={activeProject === i}
+                  className={`projectTab ${activeProject === i ? 'active' : ''}`}
+                  onClick={() => setActiveProject(i)}
+                >
+                  <span className="projectTabCloud">{p.cloud}</span>
+                  <span className="projectTabName">{p.name}</span>
+                </button>
+              ))}
+            </div>
+            <div className="projectPanel glass" key={activeProject}>
+              <span className="projectCloudTag">{projects[activeProject].cloud}</span>
+              <h3>{projects[activeProject].name}</h3>
+              <p className="projectTagline">{projects[activeProject].tagline}</p>
+              <p className="projectDesc">{projects[activeProject].description}</p>
+              <p className="projectHighlight">{projects[activeProject].highlight}</p>
+              <div className="miniChips">
+                {projects[activeProject].stack.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Experience */}
+        <section className="section" id="experience">
+          <Reveal>
+            <p className="kicker">Experience</p>
+            <h2 className="sectionTitle">A timeline of building and shipping.</h2>
+          </Reveal>
+          <div className="timeline">
+            {timeline.map((item, i) => (
+              <Reveal key={item.role + item.period} delay={i * 80} className="timelineItem">
+                <div className="timelineMarker" aria-hidden="true">
+                  <span className="timelineDot" />
+                </div>
+                <div className="timelineCard glass">
+                  <span className="timelinePeriod">{item.period}</span>
+                  <h3>{item.role}</h3>
+                  <p className="timelineCompany">{item.company}</p>
+                  <ul>
+                    {item.points.map((pt) => (
+                      <li key={pt}>{pt}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* Certifications */}
+        <section className="section" id="certifications">
+          <Reveal>
+            <p className="kicker">Certifications</p>
+            <h2 className="sectionTitle">Validated cloud expertise.</h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <div className="certCard glass">
+              <div className="certBadge" aria-hidden="true">
+                AWS
+              </div>
+              <div className="certBody">
+                <h3>AWS Certified Solutions Architect — Associate</h3>
+                <p>
+                  Demonstrated ability to design distributed systems that are resilient,
+                  cost-effective, and secure on AWS.
+                </p>
+                <span className="certValid">Valid October 2024 — October 2027</span>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Contact */}
+        <section className="section contactSection" id="contact">
+          <div className="contactGlow" aria-hidden="true" />
+          <Reveal className="contactInner glass">
+            <p className="kicker">Contact</p>
+            <h2 className="sectionTitle">Let&apos;s build something reliable.</h2>
+            <p className="contactText">
+              Available for Cloud, DevOps, and Platform Engineering roles. Reach out and I&apos;ll
+              get back to you.
+            </p>
+            <div className="contactActions">
+              <a className="btn btnPrimary" href="mailto:adithyacs064@gmail.com">
+                adithyacs064@gmail.com
+              </a>
+              <a className="btn btnGhost" href="tel:+919480759266">
+                +91 94807 59266
+              </a>
+              <a
+                className="btn btnGhost"
+                href="https://www.linkedin.com/in/adithya-c-s-00661b23b"
+                target="_blank"
+                rel="noreferrer"
+              >
+                LinkedIn
+              </a>
+            </div>
+          </Reveal>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <span>© {new Date().getFullYear()} Adithya C S</span>
+        <span>Cloud &amp; DevOps Engineer · Bangalore, India</span>
       </footer>
-    </main>
+    </div>
+  );
+}
+
+function SkillBar({ level }: { level: number }) {
+  const { ref, shown } = useReveal<HTMLSpanElement>();
+  return (
+    <span
+      ref={ref}
+      className="barFill"
+      style={{ width: shown ? `${level}%` : '0%' }}
+    />
   );
 }
 
