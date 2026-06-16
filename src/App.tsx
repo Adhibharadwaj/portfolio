@@ -219,22 +219,121 @@ function Reveal({
   );
 }
 
+/* --------------------------- count up --------------------------- */
+
+function CountUp({ value }: { value: string }) {
+  const match = value.match(/^([\d.]+)(.*)$/);
+  const { ref, shown } = useReveal<HTMLSpanElement>();
+  const [display, setDisplay] = useState(match ? '0' : value);
+
+  useEffect(() => {
+    if (!match || !shown) return;
+    const target = parseFloat(match[1]);
+    const decimals = (match[1].split('.')[1] || '').length;
+    const duration = 1200;
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay((target * eased).toFixed(decimals));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [shown, match]);
+
+  if (!match) return <span ref={ref}>{value}</span>;
+  return (
+    <span ref={ref}>
+      {display}
+      {match[2]}
+    </span>
+  );
+}
+
+/* --------------------------- typewriter --------------------------- */
+
+const roles = [
+  'Cloud & DevOps Engineer',
+  'CI/CD Automation Specialist',
+  'Infrastructure as Code Practitioner',
+  'AWS Certified Solutions Architect',
+];
+
+function Typewriter() {
+  const [index, setIndex] = useState(0);
+  const [text, setText] = useState('');
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = roles[index];
+    let delay = deleting ? 45 : 80;
+    if (!deleting && text === current) {
+      delay = 1600;
+    } else if (deleting && text === '') {
+      delay = 300;
+    }
+    const timer = setTimeout(() => {
+      if (!deleting && text === current) {
+        setDeleting(true);
+      } else if (deleting && text === '') {
+        setDeleting(false);
+        setIndex((i) => (i + 1) % roles.length);
+      } else {
+        setText((t) =>
+          deleting ? current.slice(0, t.length - 1) : current.slice(0, t.length + 1),
+        );
+      }
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [text, deleting, index]);
+
+  return (
+    <span className="typewriter">
+      {text}
+      <span className="caret" aria-hidden="true" />
+    </span>
+  );
+}
+
 /* ------------------------------ app ------------------------------ */
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [activeProject, setActiveProject] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      setShowTop(y > 600);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docHeight > 0 ? (y / docHeight) * 100 : 0);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.glass'));
+    const onMove = (e: MouseEvent) => {
+      const card = e.currentTarget as HTMLElement;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--my', `${e.clientY - rect.top}px`);
+    };
+    cards.forEach((c) => c.addEventListener('mousemove', onMove));
+    return () => cards.forEach((c) => c.removeEventListener('mousemove', onMove));
+  }, []);
+
   return (
     <div className="app">
+      <div className="scrollProgress" style={{ width: `${progress}%` }} aria-hidden="true" />
       <header className={`nav ${scrolled ? 'navScrolled' : ''}`}>
         <a href="#top" className="brand">
           <span className="brandDot" />
@@ -296,7 +395,7 @@ function App() {
             </Reveal>
             <Reveal delay={140}>
               <p className="heroRole">
-                Cloud &amp; DevOps Engineer
+                <Typewriter />
               </p>
             </Reveal>
             <Reveal delay={200}>
@@ -310,7 +409,9 @@ function App() {
               <div className="heroStats">
                 {metrics.map(([v, l]) => (
                   <div className="heroStat" key={l}>
-                    <strong>{v}</strong>
+                    <strong>
+                      <CountUp value={v} />
+                    </strong>
                     <span>{l}</span>
                   </div>
                 ))}
@@ -496,6 +597,15 @@ function App() {
           </Reveal>
         </section>
       </main>
+
+      <button
+        type="button"
+        className={`backToTop ${showTop ? 'backToTopShow' : ''}`}
+        aria-label="Back to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        ↑
+      </button>
 
       <footer className="footer">
         <span>© {new Date().getFullYear()} Adithya C S</span>
