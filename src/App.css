@@ -16,7 +16,7 @@ ul {
 .section {
   width: min(1140px, calc(100% - 40px));
   margin: 0 auto;
-  padding: clamp(72px, 11vw, 130px) 0 0;
+  padding: clamp(48px, 7vw, 84px) 0 0;
 }
 
 .kicker {
@@ -33,6 +33,18 @@ ul {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  animation: kickerCycle 2.5s linear infinite;
+}
+@keyframes kickerCycle {
+  0% {
+    color: var(--accent);
+  }
+  50% {
+    color: var(--accent-3);
+  }
+  100% {
+    color: var(--accent);
+  }
 }
 
 .sectionTitle {
@@ -181,30 +193,50 @@ ul {
   width: 100%;
 }
 .navCta {
-  padding: 10px 18px;
+  position: relative;
+  padding: 10px 20px;
   border-radius: 12px;
-  border: 1px solid var(--border-strong);
-  background: var(--surface);
+  border: 1px solid transparent;
+  color: #fff;
+  background: linear-gradient(
+    100deg,
+    var(--accent),
+    var(--accent-2) 45%,
+    var(--accent-3) 70%,
+    var(--accent) 100%
+  );
+  background-size: 220% auto;
   font-size: 0.9rem;
-  font-weight: 600;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 8px 24px -8px var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  animation: ctaFlow 3s linear infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 .navCta:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: var(--surface-strong);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 14px 34px -8px var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.navCta:active {
+  transform: translateY(0);
+}
+@keyframes ctaFlow {
+  to {
+    background-position: 220% center;
+  }
 }
 
 /* ============================ hero ============================ */
 
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: auto;
   display: flex;
   align-items: center;
   width: min(1140px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 120px 0 80px;
+  padding: 110px 0 40px;
 }
 .heroGlow {
   position: absolute;
@@ -264,10 +296,11 @@ ul {
 }
 .heroTitle {
   margin: 22px 0 6px;
-  font-size: clamp(3rem, 9vw, 6.2rem);
+  font-size: clamp(2.6rem, 7vw, 4.8rem);
   font-weight: 900;
-  line-height: 0.98;
+  line-height: 1.08;
   letter-spacing: -0.04em;
+  padding-bottom: 0.08em;
   background: linear-gradient(180deg, #ffffff 0%, #c4cade 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -283,7 +316,7 @@ ul {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 6s linear infinite;
+  animation: shimmer 2.5s linear infinite;
 }
 @keyframes shimmer {
   to {
@@ -292,7 +325,7 @@ ul {
 }
 .heroIntro {
   max-width: 640px;
-  margin: 0 0 34px;
+  margin: 0 0 36px;
   color: var(--text-soft);
   font-size: clamp(1.02rem, 2vw, 1.2rem);
 }
@@ -310,9 +343,10 @@ ul {
 }
 .heroStat strong {
   display: block;
-  font-size: clamp(1.5rem, 4vw, 2.3rem);
+  font-size: clamp(1.3rem, 3.4vw, 2rem);
   font-weight: 800;
   letter-spacing: -0.02em;
+  white-space: nowrap;
   background: linear-gradient(180deg, #fff, #aeb6cc);
   -webkit-background-clip: text;
   background-clip: text;

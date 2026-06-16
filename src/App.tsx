@@ -143,7 +143,7 @@ const timeline: TimelineItem[] = [
     role: 'DevOps Engineer',
     company: 'Siemens Healthineers',
     points: [
-      'Joined to build and scale cloud-native delivery and platform engineering practices.',
+      'Building and scaling cloud-native delivery and platform engineering practices.',
     ],
   },
   {
@@ -154,15 +154,6 @@ const timeline: TimelineItem[] = [
       'Built and maintained CI/CD across Jenkins, Azure DevOps, Bitbucket Pipelines, and GitHub Actions.',
       'Provisioned cloud infrastructure with Terraform and CloudFormation.',
       'Designed secure networking and monitoring across AWS and Azure environments.',
-    ],
-  },
-  {
-    period: '2023 — 2024',
-    role: 'Cloud & Linux Operations',
-    company: 'Cambridge & Vicinia Servers',
-    points: [
-      'Managed Python application hosting with Nginx, SSL, and DNS.',
-      'Automated deployments and maintained uptime across cloud servers.',
     ],
   },
   {
@@ -246,7 +237,7 @@ function App() {
       <header className={`nav ${scrolled ? 'navScrolled' : ''}`}>
         <a href="#top" className="brand">
           <span className="brandDot" />
-          adithya<span className="brandAccent">.cs</span>
+          Adhi
         </a>
         <nav className="navLinks" aria-label="Primary">
           <a href="#about">About</a>
@@ -255,8 +246,13 @@ function App() {
           <a href="#experience">Experience</a>
           <a href="#contact">Contact</a>
         </nav>
-        <a className="navCta" href="mailto:adithyacs064@gmail.com">
-          Let&apos;s talk
+        <a
+          className="navCta"
+          href="https://drive.google.com/drive/folders/1qN8yAWcLUgWQloUhreJJxvKhoE5FV-eU?usp=drive_link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Resume
         </a>
       </header>
 
@@ -267,7 +263,7 @@ function App() {
           <div className="heroInner">
             <Reveal>
               <span className="badge">
-                <span className="pulse" /> Joining Siemens Healthineers · May 2026
+                <span className="pulse" /> DevOps Engineer at Siemens Healthineers
               </span>
             </Reveal>
             <Reveal delay={80}>
@@ -286,16 +282,6 @@ function App() {
                 repeatable. 3.5+ years building CI/CD pipelines and infrastructure across AWS, Azure,
                 and GCP with Terraform, Jenkins, Docker, and Kubernetes.
               </p>
-            </Reveal>
-            <Reveal delay={260}>
-              <div className="heroActions">
-                <a className="btn btnPrimary" href="#projects">
-                  View Projects
-                </a>
-                <a className="btn btnGhost" href="#contact">
-                  Contact Me
-                </a>
-              </div>
             </Reveal>
             <Reveal delay={320}>
               <div className="heroStats">
@@ -465,7 +451,7 @@ function App() {
             <p className="kicker">Contact</p>
             <h2 className="sectionTitle">Let&apos;s build something reliable.</h2>
             <p className="contactText">
-              Joining Siemens Healthineers in May 2026. Always happy to connect on Cloud, DevOps,
+              DevOps Engineer at Siemens Healthineers. Always happy to connect on Cloud, DevOps,
               and Platform Engineering — reach out and I&apos;ll get back to you.
             </p>
             <div className="contactActions">
