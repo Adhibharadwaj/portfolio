@@ -219,6 +219,141 @@ function Reveal({
   );
 }
 
+/* --------------------- interactive background --------------------- */
+
+function ParticleBackground() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let width = 0;
+    let height = 0;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const devopsTokens = [
+      'docker build',
+      'kubectl apply',
+      'terraform plan',
+      'git push',
+      'CI/CD',
+      'jenkins',
+      'ansible',
+      'helm install',
+      'aws s3',
+      'pipeline',
+      'k8s',
+      'IaC',
+      'rollout',
+      'monitor',
+      'deploy',
+    ];
+
+    type P = { x: number; y: number; vx: number; vy: number; label?: string };
+    let particles: P[] = [];
+    const mouse = { x: -9999, y: -9999 };
+
+    const resize = () => {
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.min(90, Math.floor((width * height) / 16000));
+      particles = Array.from({ length: count }, (_, i) => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        label: i % 6 === 0 ? devopsTokens[i % devopsTokens.length] : undefined,
+      }));
+    };
+
+    resize();
+
+    let raf = 0;
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        const dxm = p.x - mouse.x;
+        const dym = p.y - mouse.y;
+        const dm = Math.hypot(dxm, dym);
+        if (dm < 130) {
+          const f = (130 - dm) / 130;
+          p.x += (dxm / (dm || 1)) * f * 1.4;
+          p.y += (dym / (dm || 1)) * f * 1.4;
+        }
+      }
+
+      for (let i = 0; i < particles.length; i++) {
+        const a = particles[i];
+        for (let j = i + 1; j < particles.length; j++) {
+          const b = particles[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < 120) {
+            ctx.strokeStyle = `rgba(124, 131, 255, ${(1 - d / 120) * 0.25})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+        if (a.label) {
+          ctx.fillStyle = 'rgba(45, 212, 191, 0.55)';
+          ctx.font = '11px "JetBrains Mono", monospace';
+          ctx.fillText(a.label, a.x + 6, a.y - 6);
+          ctx.fillStyle = 'rgba(45, 212, 191, 0.9)';
+          ctx.beginPath();
+          ctx.arc(a.x, a.y, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.7)';
+          ctx.beginPath();
+          ctx.arc(a.x, a.y, 1.6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      raf = requestAnimationFrame(render);
+    };
+
+    if (!reduce) raf = requestAnimationFrame(render);
+
+    const onMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    const onLeave = () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseout', onLeave);
+    window.addEventListener('resize', resize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseout', onLeave);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="particleCanvas" aria-hidden="true" />;
+}
+
 /* --------------------------- count up --------------------------- */
 
 function CountUp({ value }: { value: string }) {
@@ -241,7 +376,8 @@ function CountUp({ value }: { value: string }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [shown, match]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown, value]);
 
   if (!match) return <span ref={ref}>{value}</span>;
   return (
@@ -334,6 +470,7 @@ function App() {
   return (
     <div className="app">
       <div className="scrollProgress" style={{ width: `${progress}%` }} aria-hidden="true" />
+      <ParticleBackground />
       <header className={`nav ${scrolled ? 'navScrolled' : ''}`}>
         <a href="#top" className="brand">
           <span className="brandDot" />
