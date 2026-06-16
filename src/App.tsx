@@ -224,6 +224,7 @@ function Reveal({
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [activeProject, setActiveProject] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -239,21 +240,43 @@ function App() {
           <span className="brandDot" />
           Adhi
         </a>
-        <nav className="navLinks" aria-label="Primary">
-          <a href="#about">About</a>
-          <a href="#skills">Skills</a>
-          <a href="#projects">Projects</a>
-          <a href="#experience">Experience</a>
-          <a href="#contact">Contact</a>
+        <nav className={`navLinks ${menuOpen ? 'navLinksOpen' : ''}`} aria-label="Primary">
+          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+          <a href="#skills" onClick={() => setMenuOpen(false)}>Skills</a>
+          <a href="#projects" onClick={() => setMenuOpen(false)}>Projects</a>
+          <a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a>
+          <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
+          <a
+            className="navCta navCtaMobile"
+            href="https://drive.google.com/drive/folders/1qN8yAWcLUgWQloUhreJJxvKhoE5FV-eU?usp=drive_link"
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setMenuOpen(false)}
+          >
+            Resume
+          </a>
         </nav>
-        <a
-          className="navCta"
-          href="https://drive.google.com/drive/folders/1qN8yAWcLUgWQloUhreJJxvKhoE5FV-eU?usp=drive_link"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Resume
-        </a>
+        <div className="navRight">
+          <a
+            className="navCta"
+            href="https://drive.google.com/drive/folders/1qN8yAWcLUgWQloUhreJJxvKhoE5FV-eU?usp=drive_link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Resume
+          </a>
+          <button
+            type="button"
+            className={`navToggle ${menuOpen ? 'navToggleOpen' : ''}`}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
       </header>
 
       <main id="top">

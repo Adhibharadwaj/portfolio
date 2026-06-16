@@ -168,6 +168,44 @@ ul {
   display: flex;
   gap: 30px;
 }
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.navToggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  padding: 0 9px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  cursor: pointer;
+}
+.navToggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--text);
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.navToggleOpen span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.navToggleOpen span:nth-child(2) {
+  opacity: 0;
+}
+.navToggleOpen span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+.navCtaMobile {
+  display: none;
+}
 .navLinks a {
   position: relative;
   color: var(--text-soft);
@@ -735,6 +773,45 @@ ul {
 
 @media (max-width: 900px) {
   .navLinks {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 20px 18px;
+    background: rgba(6, 7, 11, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .navLinksOpen {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .navLinks a {
+    padding: 12px 4px;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .navLinks a:last-child {
+    border-bottom: none;
+  }
+  .navCtaMobile {
+    display: inline-flex;
+    justify-content: center;
+    margin-top: 10px;
+    border-bottom: none;
+  }
+  .navToggle {
+    display: flex;
+  }
+  .navRight .navCta {
     display: none;
   }
   .aboutGrid {
@@ -759,9 +836,6 @@ ul {
 @media (max-width: 560px) {
   .nav {
     padding: 14px 20px;
-  }
-  .navCta {
-    display: none;
   }
   .heroActions .btn {
     width: 100%;
