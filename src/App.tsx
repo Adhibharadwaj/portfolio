@@ -84,49 +84,49 @@ type Project = {
 
 const projects: Project[] = [
   {
+    name: 'BIRA',
+    tagline: 'AWS CI/CD & infrastructure automation',
+    cloud: 'AWS',
+    description:
+      'Jenkins CI/CD pipelines for React frontend and Node.js backend deployments on AWS, with Terraform-provisioned VPC, subnets, route tables, Internet/NAT gateways, ALB, IAM roles, and security groups for secure, scalable networking. DNS routing handled through Route 53 with network-level troubleshooting.',
+    stack: ['React', 'Node.js', 'AWS', 'Jenkins', 'Terraform', 'VPC', 'ALB', 'Route 53', 'IAM'],
+    highlight: 'Automated build, test, and deploy that cut manual effort and errors.',
+  },
+  {
+    name: 'BoardWorks',
+    tagline: 'Azure multi-component delivery',
+    cloud: 'Azure',
+    description:
+      'Azure DevOps YAML pipelines for multi-component applications (V6, V8, and AI services) with parameterized, multi-environment, multi-region support. Deployed to Azure App Services, Functions, and IIS on VMs with provisioned Cosmos DB, VNETs, Key Vault, Storage, and Application Gateway.',
+    stack: ['Azure App Services', 'Functions', 'Cosmos DB', 'VNET', 'Key Vault', 'App Gateway', 'Log Analytics', 'App Insights', 'Azure DevOps'],
+    highlight: 'Centralized monitoring with Log Analytics and Application Insights.',
+  },
+  {
     name: 'OCR Redaction Pipeline',
     tagline: 'AWS event-driven document processing',
     cloud: 'AWS',
     description:
-      'A serverless OCR and redaction workflow with least-privilege IAM, multi-account configuration, alerting, and automated Lambda releases.',
+      'A complete OCR and redaction pipeline built with AWS CloudFormation and automated Lambda releases via Bitbucket Pipelines. Event-driven workflows using S3 triggers, SNS notifications, and SQS queues, with least-privilege IAM and a dev/prod multi-account deployment strategy.',
     stack: ['CloudFormation', 'S3', 'Lambda', 'SNS', 'SQS', 'IAM', 'CloudWatch', 'Bitbucket'],
     highlight: 'Fully automated, secure document redaction at scale.',
   },
   {
-    name: 'BoardWorks AI Platform',
-    tagline: 'Azure multi-region delivery',
-    cloud: 'Azure',
+    name: 'Cambridge & Vicinia',
+    tagline: 'Python app hosting & server ops',
+    cloud: 'AWS · DigitalOcean',
     description:
-      'Parameterized YAML pipelines for V6, V8, and AI services across multiple environments and regions, with centralized diagnostics and managed identities.',
-    stack: ['App Services', 'Functions', 'Cosmos DB', 'Key Vault', 'App Gateway', 'Azure DevOps', 'Azure OpenAI'],
-    highlight: 'One pipeline, many regions, zero manual drift.',
+      'Deployed and managed Python applications on AWS EC2 and DigitalOcean Droplets. Configured Nginx, DNS, and SSL with Certbot for secure access, automated deployments, and ensured high availability through proactive monitoring and maintenance.',
+    stack: ['Python', 'AWS EC2', 'DigitalOcean', 'Nginx', 'Certbot', 'DNS', 'SSL'],
+    highlight: 'Secure, highly available hosting with automated deployments.',
   },
   {
     name: 'LightMetrics',
     tagline: 'Jenkins CI autoscaling on AWS',
     cloud: 'AWS',
     description:
-      'Dynamic CI build-agent infrastructure with tuned autoscaling behavior that improved build availability and cut pipeline wait time.',
-    stack: ['EC2 Fleet', 'ASG', 'Terraform', 'IAM', 'CloudWatch', 'GitHub Actions'],
-    highlight: 'Faster builds with elastic, cost-aware agents.',
-  },
-  {
-    name: 'Azure Function App CI/CD',
-    tagline: 'Serverless release automation',
-    cloud: 'Azure',
-    description:
-      'End-to-end CI/CD for Azure Function Apps with environment promotion, secret management via Key Vault, and Application Insights observability.',
-    stack: ['Azure Functions', 'Azure DevOps', 'Key Vault', 'App Insights', 'YAML'],
-    highlight: 'Reliable, observable serverless deployments.',
-  },
-  {
-    name: 'AWS Cost Optimization Automation',
-    tagline: 'Automated FinOps tooling',
-    cloud: 'AWS',
-    description:
-      'Automation that surfaces idle resources, right-sizes instances, and schedules non-prod shutdowns to reduce monthly cloud spend.',
-    stack: ['Lambda', 'CloudWatch', 'Python', 'Boto3', 'EventBridge'],
-    highlight: 'Continuous savings without manual cleanup.',
+      'Jenkins auto-scaling build infrastructure using EC2 Auto Scaling Groups and EC2 Fleet for dynamic CI agent provisioning, with Groovy declarative pipelines and Terraform-managed VPC, launch templates, IAM, and Fleet configs. Migrated and optimized workflows across Jenkins and GitHub Actions with cost-optimized scaling.',
+    stack: ['EC2', 'ASG', 'EC2 Fleet', 'Jenkins', 'Groovy', 'GitHub Actions', 'Terraform', 'IAM', 'CloudWatch'],
+    highlight: 'Faster builds with elastic, cost-aware CI agents.',
   },
 ];
 
@@ -138,6 +138,14 @@ type TimelineItem = {
 };
 
 const timeline: TimelineItem[] = [
+  {
+    period: 'May 2026 — Present',
+    role: 'DevOps Engineer',
+    company: 'Siemens Healthineers',
+    points: [
+      'Joined to build and scale cloud-native delivery and platform engineering practices.',
+    ],
+  },
   {
     period: 'Aug 2022 — Feb 2026',
     role: 'DevOps Engineer',
@@ -259,7 +267,7 @@ function App() {
           <div className="heroInner">
             <Reveal>
               <span className="badge">
-                <span className="pulse" /> Open to Cloud &amp; DevOps roles · Immediate joiner
+                <span className="pulse" /> Joining Siemens Healthineers · May 2026
               </span>
             </Reveal>
             <Reveal delay={80}>
@@ -457,8 +465,8 @@ function App() {
             <p className="kicker">Contact</p>
             <h2 className="sectionTitle">Let&apos;s build something reliable.</h2>
             <p className="contactText">
-              Available for Cloud, DevOps, and Platform Engineering roles. Reach out and I&apos;ll
-              get back to you.
+              Joining Siemens Healthineers in May 2026. Always happy to connect on Cloud, DevOps,
+              and Platform Engineering — reach out and I&apos;ll get back to you.
             </p>
             <div className="contactActions">
               <a className="btn btnPrimary" href="mailto:adithyacs064@gmail.com">
